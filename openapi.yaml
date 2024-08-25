@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: URL Shortner - OpenAPI 3.0
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Shorten URL
+paths:
+  /api/shorten:
+    post:
+      tags:
+        - Shorten URL
+      summary: Create a new shortened url
+      operationId: shortenUrl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/URL"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/URL"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/URL"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShortenCode"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ShortenCode"
+        "400":
+          description: Invalid input
+        "422":
+          description: Validation exception
+  /s/{code}:
+    get:
+      tags:
+        - Shorten URL
+      summary: Get shortened URL
+      operationId: getShortenUrl
+      parameters:
+        - name: code
+          in: path
+          description: Code for shortened url
+          required: true
+          schema:
+            type: string
+      responses:
+        "307":
+          description: Redirects user to the url
+        "404":
+          description: Url not found
+
+components:
+  schemas:
+    URL:
+      required:
+        - url
+      type: object
+      properties:
+        url:
+          type: string
+          description: The url you wish to be shortened
+          example: https://google.com
+    ShortenCode:
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+          description: The code that can be used to get a redirect to the original page
+          example: V1StGXR8_Z5jdHi6B-myT
